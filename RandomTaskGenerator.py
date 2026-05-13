@@ -1,13 +1,3 @@
-git init
-git add .
-git commit -m "Инициализация проекта: структура, README, main.py, tasks.json"
-
-[
-  {"text": "Прочитать статью", "type": "учёба"},
-  {"text": "Сделать зарядку", "type": "спорт"},
-  {"text": "Написать отчёт", "type": "работа"}
-]
-
 import tkinter as tk
 from tkinter import ttk, messagebox
 import random
@@ -37,13 +27,13 @@ def save_tasks(tasks):
 
 def generate_task():
     filter_type = filter_var.get()
-    available_tasks = [t for t in tasks if filter_type == 'все' или t['type'] == filter_type]
+    available_tasks = [t for t in tasks if filter_type == 'все' or t['type'] == filter_type]
     if not available_tasks:
         messagebox.showinfo("Нет задач", "Нет задач выбранного типа.")
         return
     task = random.choice(available_tasks)
     history_list.insert(0, f"{task['text']} ({task['type']})")
-    if history_list.size() > 10:
+    if len(history_list.get(0, tk.END)) > 10:
         history_list.delete(tk.END)
     save_tasks(tasks)
 
@@ -58,20 +48,26 @@ def add_task():
     new_task_entry.delete(0, tk.END)
     messagebox.showinfo("Успех", "Задача добавлена!")
 
+# Загрузка задач
 tasks = load_tasks()
 
+# Окно приложения
 root = tk.Tk()
 root.title("Random Task Generator")
 
+# Фильтр по типу
 filter_var = tk.StringVar(value="все")
 ttk.Label(root, text="Фильтр:").pack()
 ttk.OptionMenu(root, filter_var, "все", "все", "учёба", "спорт", "работа").pack()
 
+# Кнопка генерации
 ttk.Button(root, text="Сгенерировать задачу", command=generate_task).pack(pady=5)
 
+# История задач
 history_list = tk.Listbox(root, height=10, width=50)
 history_list.pack(pady=10)
 
+# Добавление новой задачи
 ttk.Label(root, text="Новая задача:").pack()
 new_task_entry = ttk.Entry(root, width=40)
 new_task_entry.pack()
